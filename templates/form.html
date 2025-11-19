@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>OCBS – Gửi Email PNG</title>
+
+<style>
+/* =========================
+   OCBS THEME
+========================= */
+:root {
+    --green: #00953B;
+    --green-dark: #00692B;
+    --yellow: #F7A600;
+    --bg: #f2fff6;
+    --card: #ffffff;
+    --text: #03310f;
+    --border: #cfe8d6;
+}
+
+/* DARK MODE */
+body.dark {
+    --bg: #101a14;
+    --card: #18271f;
+    --text: #d8ffe7;
+    --border: #335a42;
+}
+
+/* =========================
+   GLOBAL
+========================= */
+body {
+    background: var(--bg);
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: var(--text);
+    transition: 0.3s ease;
+}
+
+/* =========================
+   HEADER
+========================= */
+.header-wrapper {
+    width: 450px;
+    margin: 25px auto 0 auto;
+}
+
+.header {
+    background: linear-gradient(135deg, var(--green), var(--yellow));
+    padding: 15px 25px;
+    border-radius: 24px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.toggle-theme {
+    padding: 7px 15px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    user-select: none;
+    transition: 0.2s;
+}
+.toggle-theme:hover {
+    background: rgba(255,255,255,0.5);
+}
+
+/* =========================
+   MAIN CARD
+========================= */
+.container {
+    width: 950px;
+    margin: 30px auto;
+    background: var(--card);
+    padding: 32px;
+    border-radius: 24px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    animation: fadeIn 0.4s ease-out;
+}
+@keyframes fadeIn {
+    from {opacity:0; transform: translateY(20px);}
+    to   {opacity:1; transform: translateY(0);}
+}
+
+/* Logo */
+.logo {
+    text-align: center;
+    margin-bottom: 15px;
+}
+.logo img {
+    width: 350px;
+}
+
+/* Title */
+h2 {
+    text-align: center;
+    color: var(--green);
+    margin-bottom: 25px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* Labels + Inputs */
+label {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+input, select {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 15px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    transition: 0.25s;
+}
+
+input:focus, select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 8px rgba(0,149,59,0.35);
+    outline: none;
+}
+
+/* PNG Preview */
+.preview-box {
+    display: none;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.preview-img {
+    max-width: 100%;
+    border-radius: 16px;
+    border: 2px solid var(--border);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    animation: fadeIn 0.3s;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    border: 2px solid #0003;
+    font-size: 16px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffdd6b, var(--yellow));
+    color: #000;
+    cursor: pointer;
+    transition: 0.3s;
+}
+button:hover {
+    transform: scale(1.04);
+    box-shadow: 0 8px 22px rgba(247, 166, 0, 0.35);
+}
+
+/* Link */
+.link {
+    text-align: center;
+    margin-top: 20px;
+}
+.link a {
+    color: var(--green);
+    font-weight: 600;
+    text-decoration: none;
+}
+.link a:hover {
+    text-decoration: underline;
+}
+
+/* =========================
+   LOADING OVERLAY
+========================= */
+#loadingOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+    text-align: center;
+    padding-top: 150px;
+}
+
+.loader-logo {
+    width: 200px;
+    animation: pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { opacity:0.85; transform: scale(1); }
+    50% { opacity:1; transform: scale(1.15); }
+    100% { opacity:0.9; transform: scale(1); }
+}
+
+/* =========================
+   SUCCESS TOAST
+========================= */
+#popup {
+    display:none;
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    background: linear-gradient(135deg, #2ecc71, var(--green));
+    padding: 15px 22px;
+    color: #fff;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    z-index: 1000;
+    animation: slideIn 0.4s ease-out;
+}
+@keyframes slideIn {
+    from {opacity:0; transform: translateX(50px);}
+    to   {opacity:1; transform: translateX(0);}
+}
+</style>
+
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header-wrapper">
+    <div class="header">
+        <div class="header-title">OCBS Internal Mail Tool</div>
+        <div class="toggle-theme" onclick="toggleMode()">🌗 Dark/Light</div>
+    </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay">
+    <img src="{{ url_for('static', filename='logo.png') }}" class="loader-logo">
+</div>
+
+<!-- SUCCESS POPUP -->
+<div id="popup">✔ Email đã gửi thành công!</div>
+
+<!-- MAIN CARD -->
+<div class="container">
+
+    <div class="logo">
+        <img src="{{ url_for('static', filename='logo.png') }}">
+    </div>
+
+    <h2>GỬI EMAIL PNG</h2>
+
+    <form id="sendForm">
+
+        <label>Tiêu đề email</label>
+        <input type="text" name="subject" placeholder="Nhập tiêu đề email..." required>
+
+        <label>Email khách hàng</label>
+        <input type="email" name="email" placeholder="example@gmail.com" required>
+
+        <label>Chọn PNG hiển thị</label>
+        <select name="filename" id="pngSelect" required>
+            {% for f in png_files %}
+                <option value="{{ f }}">{{ f }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- PNG PREVIEW -->
+        <div class="preview-box" id="previewBox">
+            <img id="previewImg" class="preview-img">
+        </div>
+
+        <label>PDF đính kèm (tùy chọn)</label>
+        <select name="pdf_file">
+            <option value="">-- Không đính kèm PDF --</option>
+            {% for f in pdf_files %}
+                <option value="{{ f }}">{{ f }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">GỬI EMAIL</button>
+    </form>
+
+    <div class="link">
+        <a href="/bulk">➡ Gửi email hàng loạt</a>
+    </div>
+</div>
+
+<script>
+/* DARK MODE */
+function toggleMode() {
+    document.body.classList.toggle("dark");
+}
+
+/* PNG PREVIEW */
+const pngSelect = document.getElementById("pngSelect");
+const previewBox = document.getElementById("previewBox");
+const previewImg = document.getElementById("previewImg");
+
+function updatePreview() {
+    const fileName = pngSelect.value;
+    if (fileName) {
+        previewImg.src = "/uploads/" + fileName;
+        previewBox.style.display = "block";
+    }
+}
+
+/* Load preview on startup */
+window.onload = updatePreview;
+
+/* Update preview on change */
+pngSelect.addEventListener("change", updatePreview);
+
+/* SEND MAIL */
+const form = document.getElementById("sendForm");
+const loading = document.getElementById("loadingOverlay");
+const popup = document.getElementById("popup");
+
+form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+    loading.style.display = "block";
+
+    let formData = new FormData(form);
+    let response = await fetch("/", {
+        method: "POST",
+        body: formData
+    });
+
+    loading.style.display = "none";
+
+    if (response.ok) {
+        popup.style.display = "block";
+        setTimeout(() => popup.style.display = "none", 3500);
+    }
+});
+</script>
+
+</body>
+</html>
